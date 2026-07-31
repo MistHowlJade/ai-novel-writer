@@ -1,0 +1,15 @@
+{
+  "compilerOptions": {
+    "composite": true,
+    "module": "ESNext",
+    "moduleResolution": "Bundler",
+    "target": "ES2022",
+    "jsx": "react-jsx",
+    "types": ["vite/client"],
+    "baseUrl": ".",
+    "paths": { "@/*": ["src/renderer/*"] },
+    "strict": true,
+    "outDir": "out"
+  },
+  "include": ["src/renderer/**/*", "src/shared/**/*"]
+}
