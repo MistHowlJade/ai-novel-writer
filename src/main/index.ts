@@ -1,9 +1,11 @@
 import { app, BrowserWindow } from 'electron'
 import path from 'node:path'
 import { initDb } from './db'
+import { registerIpc } from './ipc'
 
 app.whenReady().then(() => {
   initDb()
+  registerIpc()
   const win = new BrowserWindow({
     width: 1200, height: 800,
     webPreferences: {

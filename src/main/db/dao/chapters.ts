@@ -33,6 +33,10 @@ export function deleteChapter(id: string): void {
   getDb().prepare('DELETE FROM chapters WHERE id=?').run(id)
 }
 
+export function listByVolume(volumeId: string): Chapter[] {
+  return getDb().prepare('SELECT * FROM chapters WHERE volume_id=? ORDER BY sort_order').all(volumeId) as Chapter[]
+}
+
 /** 从 TipTap JSON 内容提取纯文本并按中文字符+英文单词计字数 */
 export function countWords(content: string): number {
   if (!content) return 0
