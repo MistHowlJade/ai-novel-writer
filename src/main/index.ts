@@ -1,7 +1,9 @@
 import { app, BrowserWindow } from 'electron'
 import path from 'node:path'
+import { initDb } from './db'
 
 app.whenReady().then(() => {
+  initDb()
   const win = new BrowserWindow({
     width: 1200, height: 800,
     webPreferences: {
