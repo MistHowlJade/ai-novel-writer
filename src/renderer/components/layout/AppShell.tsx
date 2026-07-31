@@ -3,6 +3,7 @@ import { useProjectStore } from '../../stores/projectStore'
 import { useEditorStore } from '../../stores/editorStore'
 import { ProjectTree } from '../projectTree/ProjectTree'
 import { Editor } from '../editor/Editor'
+import { AiPanel } from '../sidebar/AiPanel'
 
 export function AppShell() {
   const projects = useProjectStore(s => s.projects)
@@ -19,7 +20,7 @@ export function AppShell() {
           {saving ? '保存中...' : `已保存 ${wordCount} 字`}
         </footer>
       </main>
-      <aside className="w-72 border-l bg-gray-50 p-3">{/* 侧边栏 Task 12 */}</aside>
+      <aside className="w-72 border-l bg-gray-50 p-3"><AiPanel /></aside>
     </div>
   )
 }

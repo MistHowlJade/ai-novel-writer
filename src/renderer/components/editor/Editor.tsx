@@ -3,6 +3,7 @@ import { useEditor, EditorContent } from '@tiptap/react'
 import StarterKit from '@tiptap/starter-kit'
 import { AiBlock } from '../../editor/extensions/aiBlock'
 import { useEditorStore } from '../../stores/editorStore'
+import { RewriteBubble } from './RewriteBubble'
 
 const AUTOSAVE_MS = 1500
 
@@ -71,6 +72,7 @@ export function Editor() {
       <div className="mx-auto max-w-3xl p-8">
         <EditorContent editor={editor} />
       </div>
+      <RewriteBubble editor={editor} />
     </div>
   )
 }
