@@ -1,0 +1,120 @@
+name: 构建与发布
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+permissions:
+  contents: write
+
+jobs:
+  test:
+    name: 测试
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - run: npm ci
+
+      - name: 运行测试
+        run: npm test
+
+  build:
+    name: 构建 ${{ matrix.platform }}
+    needs: [test]
+    strategy:
+      matrix:
+        include:
+          - os: ubuntu-latest
+            platform: linux
+            build-script: build:linux
+            asset-name: ai-novel-writer-*.AppImage
+          - os: windows-latest
+            platform: windows
+            build-script: build:win
+            asset-name: AI小说写作 Setup *.exe
+          - os: macos-latest
+            platform: macos
+            build-script: build:mac
+            asset-name: AI小说写作-*.dmg
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - run: npm ci
+
+      - name: 构建 ${{ matrix.platform }} 安装包
+        run: npm run ${{ matrix.build-script }}
+
+      - name: 上传构建产物
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.platform }}
+          path: release/${{ matrix.asset-name }}
+          if-no-files-found: error
+
+  release:
+    name: 发布 Release
+    needs: [build]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: 下载所有构建产物
+        uses: actions/download-artifact@v4
+        with:
+          path: artifacts
+
+      - name: 生成发布说明
+        id: notes
+        run: |
+          cat > release-notes.md << 'EOF'
+          # AI 小说写作
+
+          基于 AI 辅助的桌面小说写作软件。
+
+          ## 下载安装
+
+          | 平台 | 文件 |
+          |------|------|
+          | Linux | \`ai-novel-writer-*.AppImage\`（添加执行权限后运行） |
+          | Windows | \`AI小说写作 Setup *.exe\`（双击安装） |
+          | macOS | \`AI小说写作-*.dmg\`（打开后拖入 Applications） |
+
+          ## 功能
+
+          - AI 续写、改写/润色
+          - 章节/卷管理
+          - 人物/设定库
+          - 自动保存
+
+          ## 注意事项
+
+          - 首次使用需配置 AI API 端点与密钥
+          - 数据存储在本地 SQLite 数据库
+          EOF
+
+      - name: 创建 Release
+        uses: softprops/action-gh-release@v2
+        with:
+          body_path: release-notes.md
+          files: |
+            artifacts/linux/*
+            artifacts/windows/*
+            artifacts/macos/*
+          generate_release_notes: false
+          make_latest: true
