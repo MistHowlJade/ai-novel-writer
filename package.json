@@ -23,7 +23,10 @@
     "productName": "AI小说写作",
     "directories": { "output": "release" },
     "files": ["out/**/*", "node_modules/**/*", "package.json"],
-    "asarUnpack": ["**/*.{node,dll}"],
+    "asarUnpack": [
+      "**/*.{node,dll}",
+      "node_modules/better-sqlite3/**"
+    ],
     "win": { "target": ["nsis"], "icon": "build/icon.ico" },
     "mac": { "target": ["dmg"], "icon": "build/icon.png", "category": "public.app-category.productivity" },
     "linux": { "target": ["AppImage"], "icon": "build/icon.png", "category": "Office" },
