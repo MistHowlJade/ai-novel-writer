@@ -23,7 +23,10 @@ jobs:
           node-version: 22
           cache: npm
 
-      - run: npm ci
+      - run: npm ci --ignore-scripts
+
+      - name: 编译原生模块
+        run: npx electron-builder install-app-deps
 
       - name: 运行测试
         run: npm test
@@ -46,6 +49,7 @@ jobs:
             platform: macos
             build-script: build:mac
             asset-name: AI小说写作-*.dmg
+      fail-fast: false
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v4
@@ -55,10 +59,13 @@ jobs:
           node-version: 22
           cache: npm
 
-      - run: npm ci
+      - run: npm ci --ignore-scripts
+
+      - name: 编译原生模块
+        run: npx electron-builder install-app-deps
 
       - name: 构建 ${{ matrix.platform }} 安装包
-        run: npm run ${{ matrix.build-script }}
+        run: npx electron-vite build && npx electron-builder --${{ matrix.platform }} --publish=never
 
       - name: 上传构建产物
         uses: actions/upload-artifact@v4
