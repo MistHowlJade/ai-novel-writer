@@ -40,7 +40,7 @@ jobs:
           - os: ubuntu-latest
             platform: linux
             build-script: build:linux
-            asset-name: ai-novel-writer-*.AppImage
+            asset-name: AI小说写作-*.AppImage
           - os: windows-latest
             platform: windows
             build-script: build:win
